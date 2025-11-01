@@ -12,9 +12,9 @@ export class TasksService {
     @InjectRepository(Task)
     private tasksRepository: TasksRepository,
   ) {}
-  // getAllTask(): Task[] {
-  //   return this.tasks;
-  // }
+  getAllTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+    return this.tasksRepository.getTasks(filterDto);
+  }
   // getTasksWithFilters(filterDto: GetTasksFilterDto): Task[] {
   //   const { status, search } = filterDto;
   //   let tasks = this.getAllTask();
@@ -49,10 +49,10 @@ export class TasksService {
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }
   }
-  // updateTaskStatus(id: string, status: TaskStatus) {
-  //   const task = this.getTaskById(id);
-  //   if (!task) return;
-  //   task.status = status;
-  //   return task;
-  // }
+
+  async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
+    const task = await this.getTaskById(id);
+    task.status = status;
+    return this.tasksRepository.save(task);
+  }
 }
